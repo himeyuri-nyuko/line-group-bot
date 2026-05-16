@@ -52,7 +52,7 @@ async function handleMemberJoined(event) {
 
 何か質問があればいつでもメッセージを送ってください！
 
-私もこのグループにいるので、AIが答えられないことは私が対応しますね`;
+担当者もこのグループにいるので、AIが答えられないことは担当者が対応いたします`;
 
   await client.pushMessage({
     to: groupId,
