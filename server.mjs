@@ -35,12 +35,32 @@ app.post("/webhook", middleware(config), async (req, res) => {
   const events = req.body.events || [];
   for (const event of events) {
     try {
-      await handleEvent(event);
+      if (event.type === "memberJoined") {
+        await handleMemberJoined(event);
+      } else {
+        await handleEvent(event);
+      }
     } catch (err) {
       console.error("[handleEvent error]", err.message);
     }
   }
 });
+
+async function handleMemberJoined(event) {
+  const groupId = event.source.groupId;
+  const welcomeMessage = `このグループではAIアシスタントが質問に自動で答えてくれます😊
+
+何か質問があればいつでもメッセージを送ってください！
+
+私もこのグループにいるので、AIが答えられないことは私が対応しますね`;
+
+  await client.pushMessage({
+    to: groupId,
+    messages: [{ type: "text", text: welcomeMessage }],
+  });
+
+  console.log(`[welcome] 新メンバー参加 → グループ ${groupId} にウェルカムメッセージ送信`);
+}
 
 async function handleEvent(event) {
   if (event.type !== "message" || event.message.type !== "text") return;
